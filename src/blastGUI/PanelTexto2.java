@@ -1,11 +1,14 @@
+/*
+ * Susana Cano Marín
+ * Ingenieria de Softwere Avanzado
+ */
+
 package blastGUI;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
 import blast.BlastController;
 
 
@@ -24,7 +27,7 @@ public class PanelTexto2 extends JPanel implements ActionListener{
 	
 	BlastController bCnt = new BlastController();
 	
-	//Text area para introducir la consulta:
+	//Declaracion de los elementos que se van a usar:
 		JTextArea textConsulta;//para introducir la secuencia a comparar
 		JLabel lConsulta;
 		JTextArea tPorcentaje;//para introducir el porcentaje
@@ -34,16 +37,15 @@ public class PanelTexto2 extends JPanel implements ActionListener{
 		JRadioButton bRadioNucleotidos;
 		ButtonGroup bRadioGrupo; //para agrupar los 2 botones de radio y definir uno por defecto
 		JLabel lResultado;
-		JTextArea textAreaRespuesta;
+		JTextArea textAreaRespuesta; //para devolver el resultado de la comparacion
 		JLabel lSecuencias;
-		private JComboBox <String>comboSeq;
+		JComboBox <String>comboSeq; //donde se van guardando las secuencias comparadas
 		
-		@SuppressWarnings("unused")
-		private JScrollPane scrollPaneTextArea;
-		private JPanel panelBotonesRadio;
-		private JPanel panelPorcentaje;
-		private JPanel panelPorcentajeBotones;
-		//private JPanel panelRespuestaCombo;
+		private JScrollPane scrollPaneTextArea; //contiene textAreaRespuesta y la etiqueta lSecuencias
+		private JPanel panelBotonesRadio; // contiene bRadioGrupo, que a su vez contiene: bRadioProteinas y bRadioNucleotidos
+		private JPanel panelPorcentaje; // contiene lPorcentaje, comboSeq y bComparar.
+		private JPanel panelPorcentajeBotones; // contiene los paneles: panelBotonesRadio y panelPorcentaje.
+		
 		
 		
 		public PanelTexto2() {
@@ -58,61 +60,40 @@ public class PanelTexto2 extends JPanel implements ActionListener{
 			tPorcentaje = new JTextArea();
 			lPorcentaje = new JLabel("Porcentaje: ");
 			
+			// Boton = comparar
 			bComparar = new JButton("Comparar ");
 			lResultado = new JLabel("Resultado de la comparacion: ");
-			//Botones de radio:
 			
+			//Botones de radio:
 			bRadioProteinas = new JRadioButton("Proteínas", true);
 			bRadioNucleotidos = new JRadioButton("Nucleótidos", false);
 			bRadioGrupo = new ButtonGroup();
 			bRadioGrupo.add (bRadioProteinas);
 			bRadioGrupo.add (bRadioNucleotidos);
 			
-			//Definicion del array de String que compondra el combo box:
 			lSecuencias = new JLabel("Secuencias ya comparadas: ");
-			
-			//String secuencia;
-			//String secun = null;
-//			List secuencias = new List() {
-//					String sec = comboSeq.getEditor().getItem().toString();
-//			};
-			
-//				List ListItem = ControllerEmpresa.CargarEmpresa();
-//					  
-//				 int i;
-//				 if (ListItem != null) {
-//				 int size = ListItem.size();
-//				    for (i=0;i<size;i++){
-//				    comboSeq.addItem(ListItem.get(i));
-//				    }
-//				 }
-//				                          
-//			};
-				
-			//comboSeq = new JComboBox <String> (secuencias);
+							
+			// Definicion del comboBox:
 			comboSeq = new JComboBox <String> ();
-			comboSeq.setEditable(true);
-			//bComparar.addActionListener(comboSeq);
+			
+			//Activacion de los eventos de la clase PanelTexto2:
 			bComparar.addActionListener(this);
 			comboSeq.addActionListener(this);
-
 			
-			
-			
+			// Definicion de los paneles:
 			panelBotonesRadio = new JPanel(new GridLayout(0, 2));
 			panelPorcentaje = new JPanel(new GridLayout(3, 0));
 			panelPorcentajeBotones = new JPanel(new GridLayout(0, 2));
-			//panelRespuestaCombo = new JPanel(new GridLayout(0, 2));
-			
+
 			
 			textAreaRespuesta  = new JTextArea(NUM_FILA, NUM_COLUMNA);
 			scrollPaneTextArea  = new JScrollPane (textAreaRespuesta, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, 
 					JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			
+			// Añadimos los elementos inicializados:
 			add(lConsulta);
 			add(textConsulta);
 			add(panelBotonesRadio);
-			//add(bRadioProteinas);
-			//add(bRadioNucleotidos);
 			
 			panelBotonesRadio.add(add(bRadioProteinas));
 			panelBotonesRadio.add(add(bRadioNucleotidos));
@@ -131,77 +112,43 @@ public class PanelTexto2 extends JPanel implements ActionListener{
 			add(lResultado);
 			add(scrollPaneTextArea);
 			
-//			panelRespuestaCombo.add(scrollPaneTextArea);
-//			panelRespuestaCombo.add(comboSeq);
-//			add(panelRespuestaCombo);
-		
 		}
 		
-	//@SuppressWarnings("unlikely-arg-type")
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		char p = ' ';
-		//char type = 'p';
 		float porcentaje =Float.parseFloat(tPorcentaje.getText());//obtenemos el porcentaje de acierto
-		//String sec = comboSeq.getSelectedItem().toString();
-//		bCnt = new BlastController();
-		String sec = getSecuencia().toUpperCase();
+		String sec = textConsulta.getText().toUpperCase();
+		comboSeq.addItem(sec); //añadimos el string generado por el usuario en textConsulta al la lista de secuencias ya comparadas
 		
-		//System.out.println(sec);
-		if(e.getSource() == bComparar){
+		
+		if(e.getSource() == bComparar){	 
+			sec = (String) comboSeq.getEditor().getItem().toString().toUpperCase();
 			
-			//comboSeq = new JComboBox();
-			JComboBox<String> comboBox2 = new JComboBox<String>();			
-			
-			//comboBox2.addItem(sec);
-			//comboBox2.getItemCount();
-			//comboBox.getItemCount();
-			//comboBox2.addItem(sec);
-			//sec.getSecuencia();
-			for(int i=0; i < comboBox2.getItemCount(); i++){
-				if((comboBox2.getItemAt(i).equals(comboBox2.getItemAt(i + 1)) && comboBox2.getItemAt(i + 1) != null )) {
-					comboBox2.removeItemAt(i);
-					
+				// Para evitar duplicacion de secuencias en el comboBox
+				for(int i = 0; i < comboSeq.getItemCount(); i++){
+					if((comboSeq.getItemAt(i).equals(comboSeq.getItemAt(i+1)) && comboSeq.getItemAt(i+1)!=null )) {
+						comboSeq.removeItemAt(i);
+					}
 				}
-				
-			}
-			//String memoria=combox.getEditor().getItem().toString();
-			//comboBox2.addItem(comboBox2.getEditor().getItem().toString());
-//			for(int i=0;i<comboBox2.getItemCount();i++) {
-//				for( int j  =  comboBox2.getItemCount() - 1 ; j  >  i; j --)
-//				if(comboBox2.getItemAt(j).equals(comboBox2.getItemAt(i))) {
-//					comboBox2.removeItemAt(j);
-//				}
-//			}
-		
+		//System.out.println(comboSeq);
 		
 		}
 		try{
+			// Para reconocer si la secuencia a analizar es de proteinas o nucleotidos:
 			if(bRadioProteinas.isSelected()) {
-				//type ='p';
+				
 				p ='p';
-//				 sec = bCnt.blastQuery(p, dataBaseFile, 
-//						dataBaseIndexes, Float.parseFloat(tPorcentaje.getText()),comboSeq.getSelectedItem().toString());
-				 
 				String resultado = bCnt.blastQuery(p, dataBaseFile, dataBaseIndexes, porcentaje, sec);
 				 textAreaRespuesta.setText(resultado + porcentaje);
-				
-	
 			}else {
-				//type ='n';
 				p ='n';
 				textAreaRespuesta.setText("ERROR esta opción no esta implementada. ");
-			
 			}
 		} catch(Exception exc){
 			System.out.println("Error en la llamada: " + exc.toString());
 		}
-	}
-	
-	public String getSecuencia(){
-		String p;
-		p = textConsulta.getText();
-		return p;
 	}
 
 }
